@@ -1,6 +1,7 @@
 package com.example.greenbin.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,7 +28,7 @@ fun MainButton(
         Button(
             onClick = onClick,
             enabled = enabled,
-            modifier = modifier,
+            modifier = modifier.fillMaxSize(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(color.primary4),
                 contentColor = Color.White,
