@@ -1,4 +1,4 @@
-package com.example.greenbin.ui.theme
+package com.example.greenbin.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
