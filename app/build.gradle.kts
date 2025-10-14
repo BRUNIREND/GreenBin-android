@@ -71,6 +71,7 @@ dependencies {
     // --- Hilt ---
     implementation(libs.hilt.android)
     implementation(libs.com.google.devtools.ksp.gradle.plugin)
+    implementation(libs.androidx.material3)
     ksp(libs.hilt.compiler)
 
     // --- Room ---
