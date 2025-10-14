@@ -14,6 +14,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.greenbin.R
 import com.example.greenbin.R.color
 
 @Composable
@@ -32,8 +33,8 @@ fun MainButton(
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(color.primary4),
                 contentColor = Color.White,
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledContainerColor = colorResource(R.color.neutral3),
+                disabledContentColor = colorResource(R.color.neutral8),
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
@@ -52,8 +53,8 @@ fun MainButton(
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White,
                 contentColor = colorResource(color.primary4),
-                disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                disabledContainerColor = colorResource(R.color.neutral3),
+                disabledContentColor = colorResource(R.color.neutral8),
             ),
             shape = RoundedCornerShape(12.dp),
             border = BorderStroke(

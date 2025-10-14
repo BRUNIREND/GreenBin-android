@@ -84,6 +84,10 @@ dependencies {
     // Logging
     implementation(libs.jakewharton.timber)
 
+
+    implementation(libs.androidx.compose.material3.v130)
+    implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.compose.material.icons.extended)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
