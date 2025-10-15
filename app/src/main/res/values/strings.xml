@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GreenBin</string>
+    <string name="forgot_password_content">
+        Введите адрес вашей электронной почты,
+        мы отправим на неё код для подтверждения аккаунта
+    </string>
+
 </resources>
