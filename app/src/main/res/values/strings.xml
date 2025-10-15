@@ -4,5 +4,8 @@
         Введите адрес вашей электронной почты,
         мы отправим на неё код для подтверждения аккаунта
     </string>
+    <string name="check_mail_test">Мы только что отправили на почту afdsfhdkjfh.@yandex.ru код для восстановления  пароля</string>
+    <string name="new_password_text">Придумайте новый пароль, он должен состоять не менее чем из 8-ми символов, одной буквы и цифры</string>
+    <string name="new_password_title">Введите новый пароль</string>
 
 </resources>
