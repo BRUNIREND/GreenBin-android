@@ -12,9 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.rememberNavController
+import com.example.greenbin.navigation.AppNavHost
 import com.example.greenbin.presentation.ui.components.CustomButton
-import com.example.greenbin.presentation.navigation.AppNavGraph
 import com.example.greenbin.presentation.ui.theme.GreenBinTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,8 +25,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GreenBinTheme {
                 Surface (modifier = Modifier.fillMaxSize()) {
-                    val navController = rememberNavController()
-                    AppNavGraph(navController = navController)
+                    AppNavHost()
                 }
             }
         }
