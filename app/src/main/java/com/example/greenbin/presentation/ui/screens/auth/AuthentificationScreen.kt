@@ -31,119 +31,115 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.greenbin.R
 import com.example.greenbin.presentation.ui.components.CustomInput
-import com.example.greenbin.presentation.ui.components.MainButton
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun RegistrationScreen(
-    onBackClick: () -> Unit,
-    onEnterClick: () -> Unit
-) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Вход",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            // Стрелки задаются теперь так
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Назад",
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(top = 28.dp)
-        ) {
-            LoginContent()
-        }
-
-    }
-
-}
-
-@Composable
-fun LoginContent() {
-    var userInput by remember { mutableStateOf("") }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .fillMaxHeight(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CustomInput(
-            modifier = Modifier
-                .width(327.dp)
-                .height(52.dp),
-            textLabel = "E-mail",
-            textPlaceholder = "example@mail.com",
-            keyboardType = KeyboardType.Email,
-            onValueChange = { userInput = it },
-            value = ""
-        )
-        CustomInput(
-            modifier = Modifier
-                .width(327.dp)
-                .height(52.dp),
-            textLabel = "Пароль",
-            textPlaceholder = "Введите пароль",
-            keyboardType = KeyboardType.Password,
-            onValueChange = { userInput = it },
-            value = "",
-            isPasswordField = true
-        )
-        Spacer(modifier = Modifier.height(44.dp))
-        TextButton(
-            onClick = {},
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(end = 16.dp)
-
-        ) {
-            Text(
-                text = "Забыли пароль?",
-                color = colorResource(R.color.primary4),
-                style = MaterialTheme.typography.bodyMedium,
-
-                )
-        }
-        MainButton(
-            text = "Войти",
-            modifier = Modifier
-                .width(327.dp)
-                .height(44.dp),
-            filled = true,
-            enabled = false,
-            onClick = {}
-        )
-        TextButton(
-            onClick = {},
-
-            ) {
-            Text(
-                text = "Зарегистрироваться",
-                color = colorResource(R.color.primary5),
-                style = MaterialTheme.typography.titleSmall,
-
-                )
-        }
-    }
-}
-
-
-@Composable
-@Preview(showBackground = true)
-fun ShowPreviewRegistration() {
-    RegistrationScreen({}, {})
-}
+import com.example.greenbin.presentation.ui.components.CustomButton
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun RegistrationScreen(
+//    onBackClick: () -> Unit,
+//    onEnterClick: () -> Unit
+//) {
+//    Scaffold(
+//        topBar = {
+//            TopAppBar(
+//                title = {
+//                    Text(
+//                        text = "Вход",
+//                        style = MaterialTheme.typography.titleLarge
+//                    )
+//                },
+//                navigationIcon = {
+//                    IconButton(onClick = onBackClick) {
+//                        Icon(
+//                            // Стрелки задаются теперь так
+//                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+//                            contentDescription = "Назад",
+//                        )
+//                    }
+//                }
+//            )
+//        }
+//    ) { innerPadding ->
+//        Surface(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(innerPadding)
+//                .padding(top = 28.dp)
+//        ) {
+//            LoginContent()
+//        }
+//
+//    }
+//
+//}
+//
+//@Composable
+//fun LoginContent() {
+//    var userInput by remember { mutableStateOf("") }
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .fillMaxHeight(),
+//        horizontalAlignment = Alignment.CenterHorizontally
+//    ) {
+//        CustomInput(
+//            modifier = Modifier
+//                .width(327.dp)
+//                .height(52.dp),
+//            keyboardType = KeyboardType.Email,
+//            onValueChange = { userInput = it },
+//        )
+//        CustomInput(
+//            modifier = Modifier
+//                .width(327.dp)
+//                .height(52.dp),
+//            textLabel = "Пароль",
+//            textPlaceholder = "Введите пароль",
+//            keyboardType = KeyboardType.Password,
+//            onValueChange = { userInput = it },
+//            value = "",
+//            isPasswordField = true
+//        )
+//        Spacer(modifier = Modifier.height(44.dp))
+//        TextButton(
+//            onClick = {},
+//            modifier = Modifier
+//                .align(Alignment.End)
+//                .padding(end = 16.dp)
+//
+//        ) {
+//            Text(
+//                text = "Забыли пароль?",
+//                color = colorResource(R.color.primary4),
+//                style = MaterialTheme.typography.bodyMedium,
+//
+//                )
+//        }
+//        CustomButton(
+//            text = "Войти",
+//            modifier = Modifier
+//                .width(327.dp)
+//                .height(44.dp),
+//            filled = true,
+//            enabled = false,
+//            onClick = {}
+//        )
+//        TextButton(
+//            onClick = {},
+//
+//            ) {
+//            Text(
+//                text = "Зарегистрироваться",
+//                color = colorResource(R.color.primary5),
+//                style = MaterialTheme.typography.titleSmall,
+//            )
+//        }
+//    }
+//}
+//
+//
+//@Composable
+//@Preview(showBackground = true)
+//fun ShowPreviewRegistration() {
+//    RegistrationScreen({}, {})
+//}

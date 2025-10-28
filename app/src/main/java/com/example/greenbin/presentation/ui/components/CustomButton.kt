@@ -18,7 +18,7 @@ import com.example.greenbin.R
 import com.example.greenbin.R.color
 
 @Composable
-fun MainButton(
+fun CustomButton(
     text: String,
     modifier: Modifier = Modifier,
     filled: Boolean = true,

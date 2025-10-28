@@ -21,4 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "GreenBin"
 include(":app")
- 
+include(":data")
+include(":domain")

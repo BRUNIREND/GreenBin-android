@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
-
+    alias(libs.plugins.hilt)
+    id("kotlin-kapt")
 }
 
 android {
@@ -57,6 +58,8 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.navigation.compose.v280)
+    implementation(libs.androidx.hilt.navigation.compose.v130)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
@@ -69,10 +72,11 @@ dependencies {
 //    implementation("com.yandex.android:maps.mobile:4.4.1")
 
     // --- Hilt ---
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
     implementation(libs.com.google.devtools.ksp.gradle.plugin)
     implementation(libs.androidx.material3)
-    ksp(libs.hilt.compiler)
 
     // --- Room ---
     implementation(libs.androidx.room.ktx)
@@ -84,6 +88,8 @@ dependencies {
     // Logging
     implementation(libs.jakewharton.timber)
 
+    implementation(project(":data"))
+    implementation(project(":domain"))
 
     implementation(libs.androidx.compose.material3.v130)
     implementation(libs.androidx.compose.material.icons.core)

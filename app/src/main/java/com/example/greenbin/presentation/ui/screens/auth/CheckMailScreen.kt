@@ -22,12 +22,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.greenbin.R
-import com.example.greenbin.presentation.ui.components.CustomInput
-import com.example.greenbin.presentation.ui.components.MainButton
+import com.example.greenbin.presentation.ui.components.CustomButton
 import com.example.greenbin.presentation.ui.components.OtpCodeField
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -92,7 +90,7 @@ fun CheckMailContent(){
             println("Введённый код: $code")
         }
         Spacer(Modifier.height(16.dp))
-        MainButton(
+        CustomButton(
             modifier = Modifier.width(327.dp).height(52.dp),
             text = "Продолжить",
             onClick = {},

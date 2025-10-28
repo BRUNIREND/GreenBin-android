@@ -1,7 +1,9 @@
 package com.example.greenbin.presentation.ui.components
 
-import android.graphics.drawable.Icon
-import androidx.compose.foundation.layout.fillMaxSize
+import android.util.Patterns
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -10,10 +12,14 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,64 +27,136 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextLayoutInput
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextIndent.Companion.None
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
+enum class InputFieldType{
+    USERNAME,
+    PASSWORD,
+    EMAIL
+}
+data class InputFieldConfig(
+    val label: String,
+    val keyboardType: KeyboardType,
+    val visualTransformation: VisualTransformation = VisualTransformation.None,
+    val validator: (String) -> Boolean,
+    val placeholder: String,
+    val errorMessage: String
+)
 
+fun InputFieldType.getConfig(): InputFieldConfig {
+    return when (this) {
+        InputFieldType.EMAIL -> InputFieldConfig(
+            label = "Email",
+            keyboardType = KeyboardType.Email,
+            visualTransformation = VisualTransformation.None,
+            validator = { Patterns.EMAIL_ADDRESS.matcher(it).matches() },
+            placeholder = "Email",
+            errorMessage = "Некорректный email"
+        )
+        InputFieldType.PASSWORD -> InputFieldConfig(
+            label = "Пароль",
+            keyboardType = KeyboardType.Password,
+            visualTransformation = PasswordVisualTransformation(),
+            validator = { it.length >= 6 },
+            placeholder = "Password",
+            errorMessage = "Минимум 6 символов"
+        )
+        InputFieldType.USERNAME -> InputFieldConfig(
+            label = "Имя пользователя",
+            keyboardType = KeyboardType.Text,
+            visualTransformation = VisualTransformation.None,
+            placeholder = "Username",
+            validator = { it.length in 3..20 && it.all { c -> c.isLetterOrDigit() } },
+            errorMessage = "Имя должно быть 3–20 символов, без пробелов"
+        )
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomInput(
-    modifier: Modifier = Modifier,
-    textPlaceholder: String = "",
-    isPasswordField: Boolean = false,
-    icon: ImageVector? = null,
-    onIconClick: (() -> Unit)? = null,
     value: String,
+    type: InputFieldType,
+    modifier: Modifier = Modifier,
     onValueChange: (String) -> Unit,
-    textLabel: String,
-    keyboardType: KeyboardType,
 ){
+    val config = type.getConfig()
     var passwordVisible by remember { mutableStateOf(false) }
-    OutlinedTextField(
-        modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(text = textLabel, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium) },
-        placeholder = { if (textPlaceholder.isNotEmpty()) Text(text = textPlaceholder, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium) },
-        singleLine = true,
-        visualTransformation = when {
-            isPasswordField && !passwordVisible -> PasswordVisualTransformation()
-            else -> VisualTransformation.None
-        },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType,
-            imeAction = ImeAction.Next
-        ),
-        trailingIcon = {
-            when {
-                isPasswordField -> {
-                    val visibilityIcon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                    val description = if (passwordVisible) "Скрыть пароль" else "Показать пароль"
 
+    // Проверка корректности
+    val isValid = remember(value) { config.validator(value) }
+    val isError = remember(value) { !isValid && value.isNotEmpty() }
+
+    // Цвета рамки
+    val borderColor = when {
+        isError -> MaterialTheme.colorScheme.error
+        isValid -> Color(0xFF4CAF50) // Зеленый при валидном вводе
+        else -> MaterialTheme.colorScheme.outline
+    }
+
+    Column (modifier = modifier.fillMaxWidth()){
+        OutlinedTextField(
+            modifier = modifier.width(327.dp).height(60.dp),
+            shape = RoundedCornerShape(8.dp),
+            value = value,
+            onValueChange = onValueChange,
+
+            label = { Text(text = config.label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium) },
+            placeholder = { if (config.placeholder.isNotEmpty()) Text(text = config.placeholder, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium) },
+            isError = isError,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = borderColor,
+                unfocusedBorderColor = borderColor,
+                cursorColor = borderColor
+            ),
+            singleLine = true,
+            visualTransformation = when (type) {
+                InputFieldType.PASSWORD -> if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
+                else -> config.visualTransformation
+            },
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Bold
+            ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = config.keyboardType,
+                imeAction = ImeAction.Next
+            ),
+
+            trailingIcon = {
+                if (type == InputFieldType.PASSWORD) {
+                    val image = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = visibilityIcon, contentDescription = description)
+                        Icon(imageVector = image, contentDescription = null)
                     }
+                } else if (isValid) {
+                    Icon(
+                        // можно заменить на галочку ✅
+                        imageVector = Icons.Filled.Visibility,
+                        contentDescription = "Valid",
+                        tint = Color(0xFF4CAF50)
+                    )
                 }
-                icon != null && onIconClick != null -> {
-                    IconButton(onClick = onIconClick) {
-                        Icon(imageVector = icon, contentDescription = "Иконка")
-                    }
-                }
-            }
-        },
-    )
+            },
+
+        )
+        AnimatedVisibility(visible = isError) {
+            Text(
+                text = config.errorMessage,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+        }
+
+    }
 }
 
 
@@ -88,10 +166,8 @@ fun PreviewCustomInput(){
     var email by remember { mutableStateOf("") }
     CustomInput(
         modifier = Modifier.width(327.dp).height(52.dp),
-        textLabel = "E-mail",
-        textPlaceholder = "example@mail.com",
-        keyboardType = KeyboardType.Email,
         onValueChange = { email = it },
-        value = "asdsadsa"
+        value = "asdasd",
+        type = InputFieldType.PASSWORD,
     )
 }
