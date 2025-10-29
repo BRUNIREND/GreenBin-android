@@ -1,5 +1,5 @@
 package com.example.domain.auth.repository
 
-interface AuthRepository {
+interface IAuthRepository {
     suspend fun isUserLoggedIn(): Boolean
 }

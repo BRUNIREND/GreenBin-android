@@ -5,30 +5,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.greenbin.features.feature_auth.presentation.AuthentificationScreen
 import com.example.greenbin.features.feature_welcome.presentation.WelcomeScreen
+import com.google.api.Authentication
 
-//@Composable
-//fun AppNavGraph(
-//    navController: NavHostController
-//) {
-//    NavHost(
-//        navController = navController,
-//        startDestination = "welcome"
-//    ) {
-//        composable("welcome") {
-//            WelcomeScreen(
-//                onNavigateToLogin = { navController.navigate("login") },
-//                onNavigateToRegister = { navController.navigate("register") },
-//                onNavigateToMap = { navController.navigate("map") }
-//            )
-//        }
-//
-//        // временно можно сделать "заглушки", чтобы не было ошибок
-//        composable("login") { /* TODO: LoginScreen() */ }
-//        composable("register") { /* TODO: RegisterScreen() */ }
-//        composable("map") { /* TODO: MapScreen() */ }
-//    }
-//}
 
 @Composable
 fun AppNavHost() {
@@ -37,7 +17,11 @@ fun AppNavHost() {
         composable("welcome") { WelcomeScreen(
             navController = navController
         ) }
-        composable("login") { Text("Экран логина") }
+        composable("login") {
+            AuthentificationScreen(
+                navController = navController
+            )
+        }
         composable("register") { Text("Экран регистрации") }
         composable("map") { Text("Карта") }
     }

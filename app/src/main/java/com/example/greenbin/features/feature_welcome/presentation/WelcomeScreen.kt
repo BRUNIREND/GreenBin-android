@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,8 +67,7 @@ private fun WelcomeContent(
     val image = painterResource(R.drawable.trashholderbig)
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .fillMaxHeight(),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -135,7 +135,69 @@ private fun WelcomeContent(
         }
     }
 }
-//@Composable
-//@Preview(showBackground = true)
-//fun ShowOnBoardPreview(){
-//}
+@Composable
+@Preview(showBackground = true, device = "id:pixel_2",
+    wallpaper = Wallpapers.NONE
+)
+fun ShowOnBoardPreview(){
+    val image = painterResource(R.drawable.trashholderbig)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            ,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = image,
+            contentDescription = null,
+            modifier = Modifier
+                .width(89.dp)
+                .height(97.dp)
+        )
+
+        Text(
+            text = "GreenBin",
+            fontSize = 64.sp,
+            letterSpacing = -5.sp,
+            fontFamily = FontFamily(Font(R.font.lato_medium))
+
+        )
+        Text(
+            text = "get best",
+            fontSize = 36.sp,
+            letterSpacing = 4.sp,
+            fontFamily = FontFamily(Font(R.font.lato_medium))
+        )
+        Spacer(modifier = Modifier.height(104.dp))
+        CustomButton(
+            text = "Создать аккаунт",
+            modifier = Modifier
+                .width(242.dp)
+                .height(44.dp),
+            filled = true,
+            enabled = true,
+            onClick = { },
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        CustomButton(
+            text = "Вход",
+            modifier = Modifier
+                .width(242.dp)
+                .height(44.dp),
+            filled = true,
+            enabled = true,
+            onClick = {},
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        CustomButton(
+            text = "Посмотреть карту",
+            modifier = Modifier
+                .width(242.dp)
+                .height(44.dp),
+            filled = false,
+            enabled = false,
+            onClick = {},
+        )
+    }
+}

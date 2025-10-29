@@ -1,11 +1,11 @@
 package com.example.domain.auth.usecase
 
-import com.example.domain.auth.repository.AuthRepository
+import com.example.domain.auth.repository.IAuthRepository
 
 class CheckAuthUseCase(
-    private val authRepository: AuthRepository  // ← просто параметр
+    private val IAuthRepository: IAuthRepository  // ← просто параметр
 ) {
     suspend operator fun invoke(): Boolean {
-        return authRepository.isUserLoggedIn()
+        return IAuthRepository.isUserLoggedIn()
     }
 }

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTopAppBar(
-    titleRes: Int,
+    titleRes: Int, //Айдишник ресурса текста
     onBackClick: (() -> Unit)? = null,
     onActionClick: (() -> Unit)? = null,
     actionIcon: ImageVector? = null,

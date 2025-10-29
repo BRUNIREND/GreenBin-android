@@ -9,5 +9,8 @@
     <string name="new_password_title">Введите новый пароль</string>
     <string name="registration_appbar_text">Регистрация</string>
     <string name="agree_license_agreement">Принимаю условия пользовательского соглашения</string>
+    <string name="enter">Вход</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="registrate_text">Зарегистрироваться</string>
 
 </resources>

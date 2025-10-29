@@ -1,4 +1,4 @@
-package com.example.greenbin.presentation.ui.screens.auth
+package com.example.greenbin.features.feature_auth.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

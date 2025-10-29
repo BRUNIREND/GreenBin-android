@@ -1,6 +1,6 @@
 package com.example.data.auth.di
 
-import com.example.domain.auth.repository.AuthRepository
+import com.example.domain.auth.repository.IAuthRepository
 import com.example.domain.auth.usecase.CheckAuthUseCase
 import dagger.Module
 import dagger.Provides
@@ -16,8 +16,8 @@ object DomainModule {
     @Provides
     @Singleton
     fun provideCheckAuthUseCase(
-        authRepository: AuthRepository
+        IAuthRepository: IAuthRepository
     ): CheckAuthUseCase {
-        return CheckAuthUseCase(authRepository)
+        return CheckAuthUseCase(IAuthRepository)
     }
 }
