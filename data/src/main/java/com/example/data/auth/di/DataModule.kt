@@ -11,7 +11,5 @@ import dagger.hilt.components.SingletonComponent
 interface DataModule {
 
     @Binds
-    fun bindAuthRepository(
-        impl: AuthRepositoryImpl
-    ): IAuthRepository
+    fun bindAuthRepository(impl: AuthRepositoryImpl): IAuthRepository
 }

@@ -12,15 +12,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.greenbin.navigation.AppNavHost
 import com.example.greenbin.presentation.ui.components.CustomButton
 import com.example.greenbin.presentation.ui.theme.GreenBinTheme
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        installSplashScreen()
+
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {
             GreenBinTheme {

@@ -41,6 +41,7 @@ fun CustomButton(
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
+                modifier = Modifier.fillMaxSize(),
                 text = text,
                 textAlign = TextAlign.Center,
                 fontSize = 16.sp,
@@ -79,7 +80,7 @@ fun CustomButton(
 fun previewButton(){
     CustomButton(
         text = "ПОсмотреть карту",
-        modifier = Modifier.width(242.dp).height(44.dp),
+        modifier = Modifier.width(342.dp).height(44.dp),
         filled = true,
         enabled = true,
         onClick = {}

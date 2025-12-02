@@ -12,5 +12,6 @@
     <string name="enter">Вход</string>
     <string name="forgot_password">Забыли пароль?</string>
     <string name="registrate_text">Зарегистрироваться</string>
+    <string name="loginscreen_mb_enter">Войти</string>
 
 </resources>

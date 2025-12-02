@@ -6,8 +6,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.greenbin.features.feature_auth.presentation.AuthentificationScreen
+import com.example.greenbin.features.feature_register.presentation.RegistrationScreen
 import com.example.greenbin.features.feature_welcome.presentation.WelcomeScreen
-import com.google.api.Authentication
 
 
 @Composable
@@ -17,12 +17,16 @@ fun AppNavHost() {
         composable("welcome") { WelcomeScreen(
             navController = navController
         ) }
+        composable("main") { Text("Главный экран после авторизации") }
         composable("login") {
             AuthentificationScreen(
                 navController = navController
             )
         }
-        composable("register") { Text("Экран регистрации") }
+        composable("register") {
+            RegistrationScreen(navController)
+        }
+        composable ("forgot_password"){ Text("Сброс пароля") }
         composable("map") { Text("Карта") }
     }
 }

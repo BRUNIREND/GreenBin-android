@@ -2,8 +2,6 @@ package com.example.greenbin.presentation.ui.components
 
 import android.util.Patterns
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -15,11 +13,9 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,12 +24,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextIndent.Companion.None
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,72 +96,70 @@ fun CustomInput(
         else -> MaterialTheme.colorScheme.outline
     }
 
-    Column (modifier = modifier.fillMaxWidth()){
-        OutlinedTextField(
-            modifier = modifier.width(327.dp).height(60.dp),
-            shape = RoundedCornerShape(8.dp),
-            value = value,
-            onValueChange = onValueChange,
+    OutlinedTextField(
+        modifier = Modifier.width(327.dp).height(62.dp),
+        shape = RoundedCornerShape(8.dp),
+        value = value,
+        onValueChange = onValueChange,
 
-            label = { Text(text = config.label, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium) },
-            placeholder = { if (config.placeholder.isNotEmpty()) Text(text = config.placeholder, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium) },
-            isError = isError,
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = borderColor,
-                unfocusedBorderColor = borderColor,
-                cursorColor = borderColor
-            ),
-            singleLine = true,
-            visualTransformation = when (type) {
-                InputFieldType.PASSWORD -> if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
-                else -> config.visualTransformation
-            },
-            textStyle = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = config.keyboardType,
-                imeAction = ImeAction.Next
-            ),
+        label = { Text(text = config.label) },
+        placeholder = { if (config.placeholder.isNotEmpty()) Text(text = config.placeholder) },
+        isError = isError,
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = borderColor,
+            unfocusedBorderColor = borderColor,
+            cursorColor = borderColor
+        ),
+        visualTransformation = when (type) {
+            InputFieldType.PASSWORD -> if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation()
+            else -> config.visualTransformation
+        },
+        textStyle = MaterialTheme.typography.bodyMedium,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = config.keyboardType,
+            imeAction = ImeAction.Next
+        ),
 
-            trailingIcon = {
-                if (type == InputFieldType.PASSWORD) {
-                    val image = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = null)
-                    }
-                } else if (isValid) {
-                    Icon(
-                        // можно заменить на галочку ✅
-                        imageVector = Icons.Filled.Visibility,
-                        contentDescription = "Valid",
-                        tint = Color(0xFF4CAF50)
-                    )
+        trailingIcon = {
+            if (type == InputFieldType.PASSWORD) {
+                val image = if (passwordVisible) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = null)
                 }
-            },
+            } else if (isValid) {
+                Icon(
+                    // можно заменить на галочку ✅
+                    imageVector = Icons.Filled.Visibility,
+                    contentDescription = "Valid",
+                    tint = Color(0xFF4CAF50)
+                )
+            }
+        },
 
         )
-        AnimatedVisibility(visible = isError) {
-            Text(
-                text = config.errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-        }
-
+    AnimatedVisibility(visible = isError) {
+        Text(
+            text = config.errorMessage,
+            color = MaterialTheme.colorScheme.error,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(top = 4.dp)
+        )
     }
+//    Column (modifier = modifier.fillMaxHeight().height(120.dp)){
+//
+//
+//    }
 }
 
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true, device = "id:pixel_2")
 fun PreviewCustomInput(){
     var email by remember { mutableStateOf("") }
     CustomInput(
         modifier = Modifier.width(327.dp).height(52.dp),
         onValueChange = { email = it },
         value = "asdasd",
-        type = InputFieldType.PASSWORD,
+        type = InputFieldType.USERNAME,
     )
 }

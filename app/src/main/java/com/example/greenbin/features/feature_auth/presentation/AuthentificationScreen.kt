@@ -43,9 +43,12 @@ fun AuthentificationScreen(
                 is AuthUiEffect.Navigate.ToMain -> navController.navigate("main") {
                     popUpTo("welcome") {inclusive = true}
                 }
-
-                 AuthUiEffect.Navigate.ToForgotPassword -> TODO()
-                 AuthUiEffect.Navigate.ToRegister -> TODO()
+                 is AuthUiEffect.Navigate.ToRegister -> navController.navigate("register")
+                 {
+                     popUpTo("login")
+                     { inclusive = true }
+                 }
+                 is AuthUiEffect.Navigate.ToForgotPassword -> navController.navigate("forgot_password")
              }
         }
     }
@@ -53,9 +56,8 @@ fun AuthentificationScreen(
     Scaffold (
         topBar = {
             CustomTopAppBar(
-                onBackClick = {navController.popBackStack()},
                 titleRes = R.string.enter,
-                onActionClick = {},
+                onBackClick = {navController.popBackStack()},
             )
         }
     ){ innerPadding ->
@@ -82,7 +84,7 @@ fun LoginContent(
             modifier = Modifier
                 .width(327.dp)
                 .height(52.dp),
-            onValueChange = {  onEvent(AuthUiEvent.EmainChanged(it)) },
+            onValueChange = {  onEvent(AuthUiEvent.EmailChanged(it)) },
             value = uiState.email,
             type = InputFieldType.EMAIL,
         )
@@ -90,13 +92,13 @@ fun LoginContent(
             modifier = Modifier
                 .width(327.dp)
                 .height(52.dp),
-            onValueChange = { AuthUiEvent.PasswordChanged(it) },
+            onValueChange = { onEvent(AuthUiEvent.PasswordChanged(it)) },
             value = uiState.password,
             type = InputFieldType.PASSWORD,
         )
         Spacer(modifier = Modifier.height(44.dp))
         TextButton(
-            onClick = {},
+            onClick = { onEvent(AuthUiEvent.ForgotPasswordClicked)},
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(end = 16.dp)
@@ -106,11 +108,10 @@ fun LoginContent(
                 text = stringResource(R.string.forgot_password),
                 color = colorResource(R.color.primary4),
                 style = MaterialTheme.typography.bodyMedium,
-
-                )
+            )
         }
         CustomButton(
-            text = "Войти",
+            text = stringResource(R.string.loginscreen_mb_enter),
             modifier = Modifier
                 .width(327.dp)
                 .height(44.dp),
@@ -119,7 +120,7 @@ fun LoginContent(
             onClick = {onEvent(AuthUiEvent.LoginClicked)}
         )
         TextButton(
-            onClick = {},
+            onClick = {onEvent(AuthUiEvent.RegisterClicked)},
             ) {
             Text(
                 text = stringResource(R.string.registrate_text),

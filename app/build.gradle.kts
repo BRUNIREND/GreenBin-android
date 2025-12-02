@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -63,9 +64,11 @@ dependencies {
 
     // Firebase
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage)
+    implementation(libs.firebase.auth)// Latest 2025
+    implementation(libs.firebase.bom.v3460)
+    implementation(libs.google.firebase.core)
+    implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.foundation.layout)
 
     // Maps (позже добавим Yandex)
     //noinspection UseTomlInstead
@@ -91,6 +94,8 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
 
+    // Others
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.compose.material3.v130)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.material.icons.extended)

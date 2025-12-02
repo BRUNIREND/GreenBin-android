@@ -34,6 +34,15 @@ android {
 }
 
 dependencies {
+
+    //Coroutines
+    implementation(libs.kotlinx.coroutines.play.services)
+
+    // Firebase
+    implementation(platform(libs.firebase.bom.v3460))
+    implementation(libs.google.firebase.auth)
+
+    // Others
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
