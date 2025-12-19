@@ -37,11 +37,12 @@ dependencies {
 
     //Coroutines
     implementation(libs.kotlinx.coroutines.play.services)
-
+    implementation(libs.kotlinx.coroutines.core)
     // Firebase
     implementation(platform(libs.firebase.bom.v3460))
     implementation(libs.google.firebase.auth)
-
+    implementation(libs.firebase.firestore)
+    implementation(libs.kotlinx.coroutines.play.services.v181)
     // Others
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)

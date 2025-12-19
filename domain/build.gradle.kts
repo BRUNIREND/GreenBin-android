@@ -12,7 +12,7 @@ kotlin {
     }
 }
 dependencies {
-
+    implementation(libs.kotlinx.coroutines.core.v181)
     testImplementation(libs.junit)
 
 }

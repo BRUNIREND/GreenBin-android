@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,7 @@ plugins {
     alias(libs.plugins.hilt)
     id("kotlin-kapt")
     id("com.google.gms.google-services")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.0"
 }
 
 android {
@@ -35,8 +38,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    kotlin {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
     buildFeatures {
         compose = true
@@ -48,6 +53,7 @@ dependencies {
     // Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.kotlinx.serialization.json)
 
     // Compose
     implementation(libs.androidx.activity.compose)
@@ -69,6 +75,9 @@ dependencies {
     implementation(libs.google.firebase.core)
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.foundation.layout)
+    implementation(libs.google.firebase.firestore)  // ← Добавь для Firestore
+    implementation(libs.kotlinx.coroutines.play.services.v181)
+    implementation(libs.androidx.navigation.runtime.ktx)
 
     // Maps (позже добавим Yandex)
     //noinspection UseTomlInstead

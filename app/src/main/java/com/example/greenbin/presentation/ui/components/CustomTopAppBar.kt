@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,10 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-@OptIn(ExperimentalMaterial3Api::class) // Исправляй дебил
+@OptIn(ExperimentalMaterial3Api::class) // Исправляй дебил (* Исправлено)
 @Composable
 fun CustomTopAppBar(
-    titleRes: Int, //Айдишник ресурса текста
+    text: String? = null,
+    titleRes: Int? = null, //Айдишник ресурса текста
     onBackClick: (() -> Unit)? = null,
     onActionClick: (() -> Unit)? = null,
     actionIcon: ImageVector? = null,
@@ -35,8 +37,10 @@ fun CustomTopAppBar(
         title = {
             Row (modifier = Modifier.fillMaxWidth()){
                 Text(
-                    text = stringResource(titleRes),
-                    style = MaterialTheme.typography.titleLarge,
+                    text = titleRes?.let { stringResource(id = titleRes) } ?: (text.let { text } ?: ""),
+                    modifier = Modifier.padding(start = 16.dp),
+                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.titleLarge
                 )
             }
         },
@@ -50,7 +54,15 @@ fun CustomTopAppBar(
                         contentDescription = "Назад",
                     )
                 }
+            } else {
+                Icon(
+                    // Стрелки задаются теперь так
+                    // imageVector = actionIcon,
+                    imageVector = Icons.Outlined.AccountCircle,
+                    contentDescription = "Аккаунт",
+                )
             }
+
         },
         actions = {
             if (onActionClick != null && actionIcon != null){

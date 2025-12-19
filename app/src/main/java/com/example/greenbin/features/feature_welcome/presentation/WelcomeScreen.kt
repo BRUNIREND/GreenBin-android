@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.greenbin.R
+import com.example.greenbin.navigation.AppScreen
 import com.example.greenbin.presentation.ui.components.CustomButton
 import kotlinx.coroutines.flow.collectLatest
 
@@ -43,10 +44,13 @@ fun WelcomeScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect){
-                is WelcomeUiEffect.Navigate.ToLogin -> navController.navigate("login")
-                is WelcomeUiEffect.Navigate.ToRegister -> navController.navigate("register")
-                is WelcomeUiEffect.Navigate.ToMap -> navController.navigate("map")
-                is WelcomeUiEffect.Navigate.ToMain -> navController.navigate("main")
+                is WelcomeUiEffect.Navigate.ToLogin -> navController.navigate(AppScreen.Login)
+                is WelcomeUiEffect.Navigate.ToRegister -> navController.navigate(AppScreen.Register)
+                is WelcomeUiEffect.Navigate.ToMap -> navController.navigate(AppScreen.Map.createRoute())
+                is WelcomeUiEffect.Navigate.ToMain -> navController.navigate(AppScreen.Main) {
+                    popUpTo<AppScreen.Welcome> {inclusive = true}
+                    launchSingleTop = true
+                }
             }
 
         }

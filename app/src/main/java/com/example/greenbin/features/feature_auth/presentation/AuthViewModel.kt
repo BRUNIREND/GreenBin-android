@@ -35,6 +35,7 @@ class AuthViewModel @Inject constructor(
             is AuthUiEvent.LoginClicked -> login()
         }
     }
+
     private fun login(){
         val state = _uiState.value
         if (state.email.isBlank() || state.password.isBlank()) {

@@ -10,9 +10,17 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
 ): IAuthRepository {
 
+    override val currentUser: User?
+        get() = firebaseAuth.currentUser?.let { fbUser ->
+            User(
+                uid = fbUser.uid,
+                email = fbUser.email,
+                displayName = fbUser.displayName
+            )
+        }
     override suspend fun login(email: String, password: String): Result<Unit> {
         return try {
             Tasks.await(firebaseAuth.signInWithEmailAndPassword(email, password))
@@ -26,7 +34,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun register(email: String, password: String): Result<User> {
         return try {
             val result = Tasks.await(firebaseAuth.createUserWithEmailAndPassword(email, password))
-            val user = result.user?.let { User(id = it.uid, email = it.email ?: "") }
+            val user = result.user?.let { User(uid = it.uid, email = it.email ?: "", displayName = it.displayName ?: "") }
                 ?: return Result.failure(IllegalStateException("User not created"))
 
             Result.success(user)

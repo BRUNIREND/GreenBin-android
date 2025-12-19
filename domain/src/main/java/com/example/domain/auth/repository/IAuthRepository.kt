@@ -7,4 +7,5 @@ interface IAuthRepository {
     suspend fun login(email: String, password: String): Result<Unit>
     suspend fun isUserLoggedIn(): Boolean
 
+    val currentUser: User?
 }
