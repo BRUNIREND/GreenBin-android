@@ -2,13 +2,11 @@
 
 package com.greenbin.features.feature_main.presentation
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,10 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -35,29 +30,28 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.example.domain.banner.model.Banner
 import com.example.domain.categories.model.Category
 import com.example.domain.info.model.InfoCard
-import com.example.greenbin.R
 import com.example.greenbin.features.feature_main.presentation.MainUiEffect
 import com.example.greenbin.features.feature_main.presentation.MainUiEvent
 import com.example.greenbin.features.feature_main.presentation.MainViewModel
 import com.example.greenbin.navigation.AppScreen
+import com.example.greenbin.presentation.ui.components.CustomTopAppBar
 import com.greenbin.ui.components.AppBottomNavigationBar
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun MainScreen(
-    navController: NavController,
+    navController: NavHostController,
     viewModel: MainViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -65,64 +59,66 @@ fun MainScreen(
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
-                is MainUiEffect.Navigate.ToCategoryMap -> navController.navigate(AppScreen.Map.createRoute(effect.categoryId))
-                is MainUiEffect.Navigate.ToGlobalMap -> navController.navigate(AppScreen.Map.createRoute())
-                // другие переходы
+                is MainUiEffect.Navigate.ToCategoryMap -> navController.navigate(
+                    AppScreen.Map.createRoute(effect.categoryId)
+                )
+                // другие навигации...
+                MainUiEffect.Navigate.ToGlobalMap -> TODO()
                 MainUiEffect.Navigate.ToLessons -> TODO()
                 MainUiEffect.Navigate.ToProfile -> TODO()
             }
         }
     }
-    Log.d("username",uiState.userName)
+
     Scaffold(
-        topBar = { MainTopBar(userName = uiState.userName) },
-        bottomBar = { AppBottomNavigationBar(navController = navController as NavHostController) }
-    ) { innerPadding ->
+        topBar = { CustomTopAppBar(text = "Привет, ${uiState.userName}") },
+        bottomBar = { AppBottomNavigationBar(navController = navController) }
+    ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(paddingValues)
+//                .verticalScroll(rememberScrollState())
         ) {
-            // Большой горизонтальный скролл с "полезными советами"
+            // === Баннеры (верхняя часть) ===
             item {
-                Text(
-                    text = "Полезные советы",
-                    style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                )
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(3) { // потом заменишь на реальные данные
-                        UsefulTipCard()
+                    items(uiState.banners) { banner ->
+                        BannerItem(banner = banner)
                     }
                 }
             }
 
-            // Категории
+            // === Заголовок "Посмотреть пункты приема" ===
             item {
                 Text(
-                    text = "Посмотреть пункты приёма",
+                    text = "Посмотреть пункты приема",
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
+            }
+
+            // === Категории (горизонтальная прокрутка) ===
+            item {
                 LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(horizontal = 16.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(uiState.categories) { category ->
-                        CategoryCard(
+                        CategoryItem(
                             category = category,
-                            onClick = {
-                                viewModel.onEvent(MainUiEvent.CategoryClicked(category.id))
-                            }
+                            onClick = { viewModel.onEvent(MainUiEvent.CategoryClicked(category.id)) }
                         )
                     }
                 }
             }
 
-            // Полезная информация
+            // === Полезная информация ===
             item {
                 Text(
                     text = "Полезная информация",
@@ -131,150 +127,117 @@ fun MainScreen(
                 )
             }
 
-            items(uiState.infoCards) { card ->
-                InfoCard(card = card)
+            // === Карточки информации (по 2 в ряд) ===
+            val chunkedCards = uiState.infoCards.chunked(2)
+            items(chunkedCards.size) { index ->
+                val pair = chunkedCards[index]
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    InfoCardItem(card = pair[0], modifier = Modifier.weight(1f))
+                    if (pair.size > 1) {
+                        InfoCardItem(card = pair[1], modifier = Modifier.weight(1f))
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
+                }
+            }
+
+            if (uiState.error != null) {
+                item {
+                    Text(
+                        text = uiState.error!!,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
         }
     }
 }
 
+// === Баннер ===
 @Composable
-private fun MainTopBar(userName: String) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_avatar_placeholder), // замени на реальный аватар
-            contentDescription = "Аватар",
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = userName,
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-private fun UsefulTipCard() {
+private fun BannerItem(banner: Banner) {
     Card(
         modifier = Modifier
             .width(280.dp)
             .height(160.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFE0E0E0))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFE0F7FA)) // светлый фон
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "Какой пластик\nподдаётся переработке?",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = banner.imageRes),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Текст текст текст текст текст текст текст текст текст текст",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-        }
-    }
-}
-
-@Composable
-private fun CategoryCard(category: Category, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.clickable(onClick = onClick)
-    ) {
-        Card(
-            modifier = Modifier.size(80.dp),
-            shape = CircleShape,
-            colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
-        ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp)
             ) {
-                // Замени на реальную иконку категории
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_plastic), // пример
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = Color.Unspecified
-                )
+                Text(banner.title, style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                Text(banner.subtitle, style = MaterialTheme.typography.bodyMedium, color = Color.Black.copy(alpha = 0.8f))
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = category.name,
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }
 
+// === Категория ===
 @Composable
-private fun InfoCard(card: InfoCard) {
+private fun CategoryItem(category: Category, onClick: () -> Unit) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .size(100.dp)
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(4.dp)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFB2DFDB))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_box), // иконка слева
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = Color.Unspecified
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_recycle), // иконка справа
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp),
-                    tint = Color.Unspecified
-                )
-            }
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = card.title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Icon(
+                painter = painterResource(id = category.iconRes),
+                contentDescription = category.name,
+                modifier = Modifier.size(48.dp),
+                tint = Color.Unspecified   // если иконка цветная
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = card.description,
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
+            Spacer(Modifier.height(8.dp))
+            Text(category.name, style = MaterialTheme.typography.bodySmall)
+        }
+    }
+}
+
+// === Инфокарточка (по 2 в ряд) ===
+@Composable
+private fun InfoCardItem(card: InfoCard, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .height(180.dp)
+            .clickable { /* переход на детальный экран */ },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFB2DFDB))
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize().padding(16.dp)
+        ) {
+            Image(
+                painter = painterResource(id = card.imageRes),
+                contentDescription = card.title,
+                modifier = Modifier.size(80.dp),
+                contentScale = ContentScale.Fit
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = { /* действие по карточке */ },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0))
-            ) {
-                Text("Кнопка", color = Color.Black)
-            }
+            Spacer(Modifier.height(12.dp))
+            Text(card.title, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
         }
     }
 }

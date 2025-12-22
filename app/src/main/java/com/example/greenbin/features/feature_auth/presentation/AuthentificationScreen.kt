@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -23,6 +27,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.greenbin.R
+import com.example.greenbin.navigation.AppScreen
 import com.example.greenbin.presentation.ui.components.CustomButton
 import com.example.greenbin.presentation.ui.components.CustomInput
 import com.example.greenbin.presentation.ui.components.CustomTopAppBar
@@ -36,24 +41,37 @@ fun AuthentificationScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
+
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { error ->
+            snackbarHostState.showSnackbar(
+                message = error,
+                duration = SnackbarDuration.Long
+            )
+            viewModel.onEvent(AuthUiEvent.ErrorShown)
+        }
+    }
     LaunchedEffect(Unit) {
         viewModel.uiEffect.collectLatest {effect ->
              when (effect) {
-                is AuthUiEffect.Navigate.ToMain -> navController.navigate("main") {
-                    popUpTo("welcome") {inclusive = true}
+                is AuthUiEffect.Navigate.ToMain -> navController.navigate(AppScreen.Main) {
+                    popUpTo<AppScreen.Welcome> {inclusive = true}
+                    launchSingleTop = true
                 }
-                 is AuthUiEffect.Navigate.ToRegister -> navController.navigate("register")
+                 is AuthUiEffect.Navigate.ToRegister -> navController.navigate(AppScreen.Register)
                  {
-                     popUpTo("login")
-                     { inclusive = true }
+//                     popUpTo("login")
+//                     { inclusive = true }
                  }
-                 is AuthUiEffect.Navigate.ToForgotPassword -> navController.navigate("forgot_password")
+                 is AuthUiEffect.Navigate.ToForgotPassword -> navController.navigate(AppScreen.ForgotPassword)
              }
         }
     }
 
     Scaffold (
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CustomTopAppBar(
                 titleRes = R.string.enter,
@@ -128,9 +146,9 @@ fun LoginContent(
                 style = MaterialTheme.typography.titleSmall,
             )
         }
-        uiState.error?.let {
-            Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp))
-        }
+//        uiState.error?.let {
+//            Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp))
+//        }
     }
 }
 

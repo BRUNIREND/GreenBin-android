@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.greenbin.features.feature_auth.presentation.AuthentificationScreen
+import com.example.greenbin.features.feature_profile.presentation.ProfileScreen
 import com.example.greenbin.features.feature_register.presentation.RegistrationScreen
 import com.example.greenbin.features.feature_welcome.presentation.WelcomeScreen
 import com.greenbin.features.feature_main.presentation.MainScreen
@@ -42,7 +43,7 @@ fun AppNavGraph(navController: NavHostController,
             androidx.compose.material3.Text("Обучение")
         }
         composable<AppScreen.Settings> {
-            androidx.compose.material3.Text("Настройки")
+            ProfileScreen(navController = navController)
         }
     }
 }

@@ -42,28 +42,48 @@ class RegisterViewModel @Inject constructor(
 
     private fun register() {
         val state = _uiState.value
+
+        // Клиентская валидация
         if (state.password != state.confirmPassword) {
             _uiState.update { it.copy(error = "Пароли не совпадают") }
             return
         }
         if (state.password.length < 8) {
             _uiState.update { it.copy(error = "Пароль слишком короткий (минимум 8 символов)") }
+            return
         }
-        if (state.password == state.password.lowercase()){
-            _uiState.update { it.copy(error = "Пароль должен содержать хотя бы одну букву в верхнем регистре") }
+        if (state.password == state.password.lowercase()) {
+            _uiState.update { it.copy(error = "Пароль должен содержать хотя бы одну заглавную букву") }
+            return
+        }
+        if (!state.agreeToTermsChanged) {
+            _uiState.update { it.copy(error = "Необходимо принять условия") }
+            return
         }
 
+        // Запускаем корутину внутри ViewModel
+        // viewModelScope — это корутина, привязанная к жизненному циклу ViewModel
+        // Она автоматически отменяется, когда ViewModel уничтожается (например, при выходе из экрана)
+        // Это предотвращает утечки памяти
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
 
-            val result = withContext(Dispatchers.IO){
+            // Здесь мы переключаемся на фоновый поток (IO)
+            // Firebase Auth (registerUseCase) выполняет сетевые операции и блокирующие вызовы
+            // Их НЕЛЬЗЯ делать на главном потоке (Main) — будет краш приложения
+            val result = withContext(Dispatchers.IO) {
                 registerUseCase(state.email, state.password)
             }
 
             result.onSuccess { user ->
                 try {
-                    FirebaseAuth.getInstance().currentUser!!.sendEmailVerification().await()
-                    _uiEffect.send(RegisterUiEffect.Navigate.ToMain)
+                    // Отправка письма подтверждения — тоже сетевая операция
+                    // Поэтому тоже должна быть в IO-потоке
+                    withContext(Dispatchers.IO) {
+                        FirebaseAuth.getInstance().currentUser!!.sendEmailVerification().await()
+                    }
+
+                    // Успешно — отправляем эффект с сообщением и навигацией
                     _uiEffect.send(
                         RegisterUiEffect.ShowMessageAndNavigate(
                             message = "Письмо для подтверждения отправлено на ${state.email}",
@@ -71,17 +91,18 @@ class RegisterViewModel @Inject constructor(
                         )
                     )
                 } catch (e: Exception) {
+                    // Письмо не ушло, но регистрация прошла — всё равно пускаем дальше
                     _uiEffect.send(
                         RegisterUiEffect.ShowMessageAndNavigate(
-                            message = "Ошибка отправки письма для подтверждения, но мы вас пропустим",
+                            message = "Аккаунт создан, но письмо подтверждения не отправлено",
                             navigateTo = RegisterUiEffect.Navigate.ToMain
                         )
                     )
                 }
-
             }.onFailure { exception ->
                 _uiState.update { it.copy(error = exception.message ?: "Ошибка регистрации") }
             }
+
             _uiState.update { it.copy(isLoading = false) }
         }
     }

@@ -1,4 +1,5 @@
 [versions]
+coilCompose = "2.7.0"
 coreSplashscreen = "1.2.0"
 firebaseBomVersion = "34.6.0"
 hilt-version = "2.57.2"
@@ -35,11 +36,13 @@ firebaseAuthKtx = "24.0.1"
 foundationLayout = "1.9.4"
 foundationLayoutVersion = "1.9.5"
 navigationRuntimeKtx = "2.9.6"
+firebaseFirestoreKtx = "26.0.2"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-hilt-navigation-compose-v130 = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-navigation-compose-v280 = { module = "androidx.navigation:navigation-compose", version.ref = "navigationComposeVersion" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom-v3460 = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBomVersion" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
@@ -87,6 +90,7 @@ com-google-firebase-firebase-auth-ktx = { group = "com.google.firebase", name = 
 androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayoutVersion" }
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 
 [plugins]
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }

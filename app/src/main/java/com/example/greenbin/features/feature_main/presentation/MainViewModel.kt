@@ -3,9 +3,12 @@ package com.example.greenbin.features.feature_main.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.auth.usecase.GetUserNameUseCase
+import com.example.domain.auth.usecase.GetUserProfileUseCase
+import com.example.domain.banner.usecase.GetBannersUseCase
 import com.example.domain.categories.model.Category
 import com.example.domain.categories.usecase.GetCategoriesUseCase
 import com.example.domain.info.usecase.GetInfoCardsUseCase
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -17,13 +20,16 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getUserNameUseCase: GetUserNameUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
-    private val getInfoCardsUseCase: GetInfoCardsUseCase
+    private val getInfoCardsUseCase: GetInfoCardsUseCase,
+    private val getBannersUseCase: GetBannersUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState(isLoading = true))
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -33,6 +39,9 @@ class MainViewModel @Inject constructor(
 
     init {
         loadData()
+        loadUserProfile()
+
+
     }
 
     fun onEvent(event: MainUiEvent) {
@@ -52,11 +61,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    private fun loadUserProfile() {
+        viewModelScope.launch {
+            val currentUid = FirebaseAuth.getInstance().currentUser?.uid
+            if (currentUid != null) {
+                val user = withContext(Dispatchers.IO) {
+                    getUserProfileUseCase(currentUid)
+                }
+                val displayName = user
+                    ?: user?.email?.substringBefore("@")
+                    ?: "Пользователь"
+
+                _uiState.update { it.copy(userName = displayName as String) }
+            }
+        }
+    }
     private fun loadData(){
         viewModelScope.launch {
             try {
                 val userName = getUserNameUseCase()
                 val categories: List<Category> = getCategoriesUseCase()
+                val banners = getBannersUseCase()
+                _uiState.update { it.copy(banners = banners) }
                 _uiState.update { it.copy(
                     userName = userName,
                     categories = categories,

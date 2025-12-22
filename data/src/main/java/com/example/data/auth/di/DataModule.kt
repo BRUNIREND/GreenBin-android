@@ -1,8 +1,10 @@
 package com.example.data.auth.di
 import com.example.data.auth.repository.AuthRepositoryImpl
+import com.example.data.auth.repository.BannerRepositoryImpl
 import com.example.data.auth.repository.CategoryRepositoryImpl
 import com.example.data.auth.repository.InfoCardRepositoryImpl
 import com.example.domain.auth.repository.IAuthRepository
+import com.example.domain.banner.repository.IBannerRepository
 import com.example.domain.categories.repository.ICategoryRepository
 import com.example.domain.info.repository.IInfoCardRepository
 import dagger.Binds
@@ -22,5 +24,9 @@ interface DataModule {
 
     @Binds
     fun bindInfoCardRepository(impl: InfoCardRepositoryImpl): IInfoCardRepository
+    @Binds
+    fun bindBannerRepository(
+        impl: BannerRepositoryImpl
+    ): IBannerRepository
 
 }

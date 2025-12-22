@@ -3,6 +3,7 @@ package com.example.greenbin.features.feature_auth.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.auth.usecase.LoginUseCase
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,7 @@ class AuthViewModel @Inject constructor(
             is AuthUiEvent.ForgotPasswordClicked -> viewModelScope.launch { _uiEffect.send(
                 AuthUiEffect.Navigate.ToForgotPassword) }
             is AuthUiEvent.LoginClicked -> login()
+            AuthUiEvent.ErrorShown -> _uiState.update { it.copy(error = null) }
         }
     }
 
@@ -48,7 +50,11 @@ class AuthViewModel @Inject constructor(
             result.onSuccess {
                 _uiEffect.send(AuthUiEffect.Navigate.ToMain)
             }.onFailure { exception ->
-                _uiState.update { it.copy(error = exception.message) }
+                val errorMessage = when (exception) {
+                    is FirebaseAuthInvalidCredentialsException -> "Неправильный логин или пароль"
+                    else -> "Ошибка входа: ${exception.message}"
+                }
+                _uiState.update { it.copy(error = errorMessage) }
             }
             _uiState.update { it.copy(isLoading = false) }
         }

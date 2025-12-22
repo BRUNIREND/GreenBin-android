@@ -6,5 +6,5 @@ sealed interface AuthUiEvent{
     data object LoginClicked : AuthUiEvent
     data object ForgotPasswordClicked : AuthUiEvent
     data object RegisterClicked : AuthUiEvent
-
+    data object ErrorShown : AuthUiEvent
 }
