@@ -1,7 +1,9 @@
 package com.example.greenbin.features.feature_map
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.PointF
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,10 +23,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MyLocation
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -46,22 +51,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.data.R
 import com.example.greenbin.features.feature_map.viewmodel.MapViewModel
 import com.example.greenbin.presentation.ui.components.PointDetailContent
+import com.google.android.gms.location.LocationServices
 import com.greenbin.ui.components.AppBottomNavigationBar
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import com.yandex.mapkit.map.IconStyle
+import com.yandex.mapkit.map.PlacemarkMapObject
 import com.yandex.mapkit.mapview.MapView
 import com.yandex.runtime.image.ImageProvider
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +82,8 @@ fun MapScreen(
     navController: NavHostController,
     viewModel: MapViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val points by viewModel.points.collectAsStateWithLifecycle()
     val selectedPoint by viewModel.selectedPoint.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
@@ -81,20 +95,18 @@ fun MapScreen(
 
     var selectedTab by remember { mutableStateOf(0) } // 0 = Категории, 1 = История
 
+    val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
+    val mapView = remember { mutableStateOf<MapView?>(null) }
 
+    val userLocationPlacemark = remember { mutableStateOf<PlacemarkMapObject?>(null) }
 
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        when {
-            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true -> {
-                // Разрешение дано — можно включить мою позицию
-                MapKitFactory.getInstance().onStart() // если нужно
-            }
-            else -> {
-                // Разрешение отклонено — покажи объяснение
-            }
+        if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        ) {
+//            viewModel.updateLocationPermission(true)
         }
     }
 
@@ -205,56 +217,91 @@ fun MapScreen(
                     }
 
                     Spacer(Modifier.height(100.dp).fillMaxWidth()) // место для BottomBar
-//                    AppBottomNavigationBar(
-//                        navController = navController,
-//                        modifier = Modifier.navigationBarsPadding()
-//                    )
+
                 }
             },
             content = { innerPadding ->
                 Box(modifier = Modifier.fillMaxSize()) {
                     // Карта Yandex
                     AndroidView(
-                        modifier = Modifier.fillMaxSize().padding(innerPadding),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
                         factory = { context ->
                             MapView(context).apply {
                                 mapWindow.map.move(
-                                    CameraPosition(Point(55.7558, 37.6173), 11f, 0f, 0f) // Москва центр
+                                    CameraPosition(Point(56.0100, 92.8600), 11f, 0f, 0f)
                                 )
+                                mapView.value = this
                             }
                         },
-                        update = { mapView ->
-                            mapView.map.mapObjects.clear()
+                        update = { view ->
+                            mapView.value = view
+                            view.map.mapObjects.clear()
 
                             points.forEach { point ->
-                                val placemark = mapView.map.mapObjects.addPlacemark(
+                                val placemark = view.map.mapObjects.addPlacemark(
                                     Point(point.latitude, point.longitude)
                                 )
                                 placemark.setIcon(
-                                    ImageProvider.fromResource(mapView.context, R.drawable.ic_pointer), // Обычные метки
-//                            ImageProvider.fromResource(mapView.context, point.iconRes), // Метки ввиде иконок категорий сортировки
+                                    ImageProvider.fromResource(view.context, R.drawable.ic_pointer), // Обычные метки
+//                            ImageProvider.fromResource(mapView.context, point.iconRes),
                                     IconStyle().apply {
                                         scale = 0.8f
-                                        anchor = PointF(0.5f, 1f) // "ножка" метки на точку
+                                        anchor = PointF(0.5f, 1f)
                                     }
                                 )
                                 placemark.userData = point.id
                                 placemark.addTapListener { _, _ ->
                                     viewModel.selectPoint(point)
-//                            val pointId = placemark.userData as String
-//                            Log.d("MapScreen", "Метка кликнута! pointId = $pointId")
-//                            navController.navigate("point_detail/$pointId")   // ← просто строка
+
                                     true
                                 }
                             }
                         },
-                        onRelease = { mapView ->
-                            mapView.onStop()
+                        onRelease = { view ->
+                            view.onStop()
                             MapKitFactory.getInstance().onStop()
                         }
                     )
+                    FloatingActionButton(
+                        onClick = {
+                            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+                            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                                    try {
+                                        val location = fusedLocationClient.lastLocation.await()
+                                        location?.let {
+                                            mapView.value?.map?.move(
+                                                CameraPosition(Point(it.latitude, it.longitude), 15f, 0f, 0f),
+                                                com.yandex.mapkit.Animation(com.yandex.mapkit.Animation.Type.SMOOTH, 1f),
+                                                null
+                                            )
 
+                                            // Добавляем/обновляем синий маркер пользователя
+                                            userLocationPlacemark.value?.let { old -> mapView.value?.map?.mapObjects?.remove(old) }
+                                            val newPlacemark = mapView.value?.map?.mapObjects?.addPlacemark(Point(it.latitude, it.longitude))
+                                            newPlacemark?.setIcon(ImageProvider.fromResource(context, com.example.greenbin.R.drawable.ic_user_location)) // синий круг
+                                            newPlacemark?.zIndex = 100f
+                                            userLocationPlacemark.value = newPlacemark
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.e("MapScreen", "Ошибка геолокации", e)
+                                    }
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                            .navigationBarsPadding(),
+                        containerColor = Color.White,
+                        contentColor = Color(0xFF00BFA5)
+                    ) {
+                        Icon(Icons.Default.MyLocation, contentDescription = "Моя позиция")
+                    }
                 }
+
 
             }
         )

@@ -1,5 +1,6 @@
 package com.example.greenbin.features.feature_learning
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -52,11 +52,12 @@ fun LearningMainScreen(navController: NavHostController, viewModel: LearningView
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { navController.navigate(AppScreen.LearningTopic(topic.id)) },
-                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE4E1)),
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFffff)),
+                        elevation = CardDefaults.cardElevation(4.dp),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Row(modifier = Modifier.padding(16.dp)) {
-                            Icon(
+                            Image(
                                 painterResource(topic.iconRes),
                                 contentDescription = null,
                                 modifier = Modifier.size(80.dp)

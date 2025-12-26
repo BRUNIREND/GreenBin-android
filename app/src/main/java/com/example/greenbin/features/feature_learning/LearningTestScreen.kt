@@ -1,5 +1,6 @@
 package com.example.greenbin.features.feature_learning
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.example.greenbin.navigation.AppScreen
 
 @Composable
 fun LearningTestScreen(topicId: String, navController: NavHostController, viewModel: LearningViewModel = hiltViewModel()) {
@@ -61,7 +63,13 @@ fun LearningTestScreen(topicId: String, navController: NavHostController, viewMo
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             items(tests) { test ->
-                Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE4E1))) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFFFFFF)),
+                    elevation = CardDefaults.cardElevation(4.dp),
+                    modifier = Modifier
+                        .clickable { if (!test.isLocked) navController.navigate(AppScreen.LearningTest(test.id)) }
+
+                ) {
                     Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(test.title, style = MaterialTheme.typography.titleMedium)

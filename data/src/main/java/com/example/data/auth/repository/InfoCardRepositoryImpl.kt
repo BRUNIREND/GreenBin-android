@@ -18,39 +18,37 @@ class InfoCardRepositoryImpl @Inject constructor(
 ) : IInfoCardRepository {
     override fun getInfoCards(): Flow<List<InfoCard>> = flow {
         val hardcodedCards = listOf(
-            InfoCard(
-                id = "1",
-                title = "Маркировка",
-                description = "Справочник кодов переработки отходов",
-//                imageRes = R.drawable.ic_marking  // локальная иконка
-                imageRes = R.drawable.ic_marking,  // локальная иконка,
-                categoryId = null
-            ),
-            InfoCard(
-                id = "2",
-                title = "Сортировка",
-                description = "Как правильно сортировать мусор дома",
-//                imageRes = R.drawable.ic_sorting
-                imageRes = R.drawable.ic_marking,
-                categoryId = null
-
-            ),
-            InfoCard(
-                id = "3",
-                title = "Утилизация",
-                description = "Куда сдавать опасные отходы",
-                imageRes = R.drawable.ic_marking,
-                categoryId = null
-
-            ),
-            InfoCard(
-                id = "4",
-                title = "Эко-привычки",
-                description = "Простые шаги к экологичному образу жизни",
-                imageRes = R.drawable.ic_marking,
-                categoryId = null
-            )
-            // Добавь сколько угодно карточек
+            InfoCard("1", "Почему сортировка важна?", "Сортировка помогает перерабатывать отходы, снижая загрязнение.", R.drawable.ic_marking),
+            InfoCard("2", "Как начать перерабатывать?", "Начните с простого: собирайте пластик и бумагу отдельно.", R.drawable.ic_marking),
+            InfoCard("3", "Как начать перерабатывать?", "Начните с простого: собирайте пластик и бумагу отдельно.", R.drawable.ic_marking)
+//            InfoCard(
+//                id = "1",
+//                title = "Маркировка",
+//                description = "Справочник кодов переработки отходов",
+////                imageRes = R.drawable.ic_marking  // локальная иконка
+//                imageRes = R.drawable.ic_marking,  // локальная иконка,
+//            ),
+//            InfoCard(
+//                id = "2",
+//                title = "Сортировка",
+//                description = "Как правильно сортировать мусор дома",
+////                imageRes = R.drawable.ic_sorting
+//                imageRes = R.drawable.ic_marking,
+//
+//            ),
+//            InfoCard(
+//                id = "3",
+//                title = "Утилизация",
+//                description = "Куда сдавать опасные отходы",
+//                imageRes = R.drawable.ic_marking,
+//
+//            ),
+//            InfoCard(
+//                id = "4",
+//                title = "Эко-привычки",
+//                description = "Простые шаги к экологичному образу жизни",
+//                imageRes = R.drawable.ic_marking,
+//            )
         )
         emit(hardcodedCards)
     }

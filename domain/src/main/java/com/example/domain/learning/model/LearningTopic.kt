@@ -6,5 +6,7 @@ data class LearningTopic(
     val subtitle: String,
     val iconRes: Int,
     val totalLessons: Int,
-    val completedLessons: Int
+    val completedLessons: Int,
+    val totalTests: Int,
+    val completedTests: Int
 )

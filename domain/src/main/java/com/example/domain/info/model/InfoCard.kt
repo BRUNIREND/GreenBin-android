@@ -5,5 +5,4 @@ data class InfoCard (
     val title: String,
     val description: String,
     val imageRes: Int,
-    val categoryId: String?
 )

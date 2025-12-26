@@ -37,11 +37,19 @@ sealed class AppScreen(val route: String) {
     data class LearningTopic(val topicId: String) : AppScreen("learning_topic/{topicId}") {
         fun createRoute(topicId: String) = "learning_topic/$topicId"
     }
-
     @Serializable
-    data class LearningTest(val topicId: String) : AppScreen("learning_test/{topicId}") {
-        fun createRoute(topicId: String) = "learning_test/$topicId"
+    data class LearningLesson(val topicId: String, val lessonId: String) : AppScreen("learning_lesson/{topicId}/{lessonId}") {
+        fun createRoute(topicId: String, lessonId: String) = "learning_lesson/$topicId/$lessonId"
     }
+    @Serializable
+    data class LearningTest(val testId: String) : AppScreen("learning_test/{testId}") {
+        fun createRoute(testId: String) = "learning_test/$testId"
+    }
+//    @Serializable
+//    data class LearningTest(val topicId: String) : AppScreen("learning_test/{topicId}") {
+//        fun createRoute(topicId: String) = "learning_test/$topicId"
+//    }
+
     @Serializable
     data object Settings : AppScreen("settings")
 

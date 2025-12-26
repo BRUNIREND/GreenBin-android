@@ -15,6 +15,8 @@ import com.example.domain.categories.usecase.GetCategoriesUseCase
 import com.example.domain.info.repository.IInfoCardRepository
 import com.example.domain.info.usecase.GetInfoCardsUseCase
 import com.example.domain.learning.repository.ILearningRepository
+import com.example.domain.learning.usecase.GetLessonsUseCase
+import com.example.domain.learning.usecase.GetQuestionsUseCase
 import com.example.domain.learning.usecase.GetTestsUseCase
 import com.example.domain.learning.usecase.GetTheoryCategoriesUseCase
 import com.example.domain.learning.usecase.GetTopicsUseCase
@@ -119,4 +121,12 @@ object DomainModule {
     @Singleton
     fun provideGetTestsUseCase(repository: ILearningRepository): GetTestsUseCase =
         GetTestsUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetQuestionsUseCase(repository: ILearningRepository): GetQuestionsUseCase = GetQuestionsUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetLessonsUseCase(repository: ILearningRepository): GetLessonsUseCase = GetLessonsUseCase(repository)
 }

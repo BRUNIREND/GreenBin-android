@@ -1,8 +1,12 @@
 package com.example.greenbin.features.feature_map.viewmodel
 
+import android.Manifest
+import android.app.Application
+import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +14,7 @@ import com.example.data.R
 import com.example.domain.categories.model.Category
 import com.example.domain.map.model.RecyclingPoint
 import com.example.domain.map.usecase.GetPointsByCategoryUseCase
+import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +24,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
+
 
 @HiltViewModel
 class MapViewModel @Inject constructor(
@@ -71,6 +77,11 @@ class MapViewModel @Inject constructor(
     fun updateSearchQuery(query: String) {
         searchQuery = query
         // TODO: фильтрация пунктов по поиску
+    }
+
+    fun requestUserLocation(onLocationReceived: (Double, Double) -> Unit) {
+        // Используем FusedLocationProviderClient
+
     }
 
 }

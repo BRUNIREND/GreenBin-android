@@ -9,9 +9,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import com.example.greenbin.features.feature_auth.presentation.AuthentificationScreen
+import com.example.greenbin.features.feature_learning.LearningLessonScreen
 import com.example.greenbin.features.feature_learning.LearningMainScreen
-import com.example.greenbin.features.feature_learning.LearningTestScreen
 import com.example.greenbin.features.feature_learning.LearningTopicScreen
+import com.example.greenbin.features.feature_learning.TestScreen
 import com.example.greenbin.features.feature_map.MapScreen
 import com.example.greenbin.features.feature_map.PointDetailScreen
 import com.example.greenbin.features.feature_profile.presentation.ProfileScreen
@@ -68,17 +69,25 @@ fun AppNavGraph(navController: NavHostController, modifier: Modifier = Modifier)
             val topicId = backStackEntry.arguments?.getString("topicId") ?: return@composable
             LearningTopicScreen(topicId = topicId, navController = navController)
         }
-
-        composable<AppScreen.LearningTest> { backStackEntry ->
+        composable<AppScreen.LearningLesson> { backStackEntry ->
             val topicId = backStackEntry.arguments?.getString("topicId") ?: return@composable
-            LearningTestScreen(topicId = topicId, navController = navController)
+            val lessonId = backStackEntry.arguments?.getString("lessonId") ?: return@composable
+            LearningLessonScreen(topicId = topicId, lessonId = lessonId, navController = navController)
         }
+        composable<AppScreen.LearningTest> { backStackEntry ->
+            val testId = backStackEntry.arguments?.getString("testId") ?: return@composable
+            TestScreen(testId = testId, navController = navController)
+        }
+//        composable<AppScreen.LearningTest> { backStackEntry ->
+//            val topicId = backStackEntry.arguments?.getString("topicId") ?: return@composable
+//            LearningTestScreen(topicId = topicId, navController = navController)
+//        }
 
         composable<AppScreen.Settings> {
             ProfileScreen(navController = navController)
         }
 
-        // ←←←←← Детальный экран пункта — В КОНЕЦ!
+
         composable(
             route = "point_detail/{pointId}",
             arguments = listOf(navArgument("pointId") { type = NavType.StringType })
