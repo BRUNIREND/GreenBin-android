@@ -14,6 +14,13 @@ import com.example.domain.categories.repository.ICategoryRepository
 import com.example.domain.categories.usecase.GetCategoriesUseCase
 import com.example.domain.info.repository.IInfoCardRepository
 import com.example.domain.info.usecase.GetInfoCardsUseCase
+import com.example.domain.learning.repository.ILearningRepository
+import com.example.domain.learning.usecase.GetTestsUseCase
+import com.example.domain.learning.usecase.GetTheoryCategoriesUseCase
+import com.example.domain.learning.usecase.GetTopicsUseCase
+import com.example.domain.map.repository.IRecyclingPointRepository
+import com.example.domain.map.usecase.GetPointByIdUseCase
+import com.example.domain.map.usecase.GetPointsByCategoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -84,4 +91,32 @@ object DomainModule {
     @Singleton
     fun provideLogoutUseCase(repository: IAuthRepository): LogoutUseCase =
         LogoutUseCase(repository)
+    @Provides
+    @Singleton
+    fun provideGetPointsByCategoryUseCase(
+        repository: IRecyclingPointRepository
+    ): GetPointsByCategoryUseCase = GetPointsByCategoryUseCase(repository)
+
+
+    @Provides
+    @Singleton
+    fun provideGetPointByIdUseCase(
+        repository: IRecyclingPointRepository
+    ): GetPointByIdUseCase = GetPointByIdUseCase(repository)
+
+
+    @Provides
+    @Singleton
+    fun provideGetTopicsUseCase(repository: ILearningRepository): GetTopicsUseCase =
+        GetTopicsUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetTheoryCategoriesUseCase(repository: ILearningRepository): GetTheoryCategoriesUseCase =
+        GetTheoryCategoriesUseCase(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetTestsUseCase(repository: ILearningRepository): GetTestsUseCase =
+        GetTestsUseCase(repository)
 }

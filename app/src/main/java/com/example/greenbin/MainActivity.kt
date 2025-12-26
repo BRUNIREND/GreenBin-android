@@ -17,6 +17,7 @@ import com.example.greenbin.navigation.AppEntry
 import com.example.greenbin.presentation.ui.components.CustomButton
 import com.example.greenbin.presentation.ui.theme.GreenBinTheme
 import com.google.firebase.FirebaseApp
+import com.yandex.mapkit.MapKitFactory
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +26,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         installSplashScreen()
-
+        MapKitFactory.setApiKey("76dabcaa-d7d4-4f8b-9ec9-02989d704199")
+        MapKitFactory.initialize(this)
         FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {

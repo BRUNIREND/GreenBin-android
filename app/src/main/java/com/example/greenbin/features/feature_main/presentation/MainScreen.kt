@@ -60,7 +60,7 @@ fun MainScreen(
         viewModel.uiEffect.collectLatest { effect ->
             when (effect) {
                 is MainUiEffect.Navigate.ToCategoryMap -> navController.navigate(
-                    AppScreen.Map.createRoute(effect.categoryId)
+                    AppScreen.Map(effect.categoryId)
                 )
                 // другие навигации...
                 MainUiEffect.Navigate.ToGlobalMap -> TODO()

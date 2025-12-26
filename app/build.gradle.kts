@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.greenbin"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -58,6 +58,7 @@ dependencies {
 
     // Compose
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.material3.v130)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
@@ -81,8 +82,8 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
 
     // Maps (позже добавим Yandex)
-    //noinspection UseTomlInstead
-//    implementation("com.yandex.android:maps.mobile:4.4.1")
+    implementation(libs.maps.mobile)
+    implementation(libs.androidx.compose.material3.window.size.class1)
 
     // --- Hilt ---
     kapt(libs.hilt.compiler)

@@ -46,7 +46,7 @@ fun AppBottomNavigationBar(
         NavigationBarItem(
             selected = currentRoute?.startsWith("map") == true,
             onClick = {
-                navController.navigate(AppScreen.Map.createRoute()) {  // ← без параметра
+                navController.navigate(AppScreen.Map(categoryId = null)) {  // ← без параметра
                     popUpTo(navController.graph.findStartDestination().id) {
                         saveState = true
                     }

@@ -46,7 +46,7 @@ fun WelcomeScreen(
             when (effect){
                 is WelcomeUiEffect.Navigate.ToLogin -> navController.navigate(AppScreen.Login)
                 is WelcomeUiEffect.Navigate.ToRegister -> navController.navigate(AppScreen.Register)
-                is WelcomeUiEffect.Navigate.ToMap -> navController.navigate(AppScreen.Map.createRoute())
+                is WelcomeUiEffect.Navigate.ToMap -> navController.navigate(AppScreen.Map(categoryId = null))
                 is WelcomeUiEffect.Navigate.ToMain -> navController.navigate(AppScreen.Main) {
                     popUpTo<AppScreen.Welcome> {inclusive = true}
                     launchSingleTop = true
